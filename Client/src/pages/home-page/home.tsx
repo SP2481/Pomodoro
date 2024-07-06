@@ -1,15 +1,13 @@
 'use client'
 import { FlexBoxCentered, FlexBoxColumnCentered } from "@/components/flex-box/flex-box";
-import TimerPopup from "@/components/popup/timer-popup";
-import { usePopup } from "@/hooks/usePopup";
+import TimerPopover from '@/components/set-timer-popover';
 import { useEffect, useState } from "react";
 
 export default function Homepage() {
-    const [time, setTime] = useState<number>(2 * 60);
+    const [time, setTime] = useState<number>(25 * 60);
     const [isActive, setIsActive] = useState<boolean>(false);
     const [isBreakTime, setIsBreakTime] = useState<boolean>(false);
     const [isPaused, setIsPaused] = useState<boolean>(false);
-    const { openPopup } = usePopup();
 
     useEffect(() => {
         let interval: any;
@@ -20,7 +18,6 @@ export default function Homepage() {
         } else {
             clearInterval(interval);
         }
-
         if (time === 0) {
             if (isBreakTime) {
                 setIsBreakTime(false); // break time is over
@@ -67,12 +64,9 @@ export default function Homepage() {
                 </div>
                 <h1 className="text-white text-6xl ">{formatTime(time)}</h1>
                 <FlexBoxCentered style={{ gap: '1rem' }}>
-                    <button className="w-24 h-10 bg-white rounded transform hover:scale-105 transition-transform duration-200 active:scale-95" disabled={isActive} onClick={handleStart}>Start</button>
-                    <button className="w-24 h-10 bg-white rounded transform hover:scale-105 transition-transform duration-200 active:scale-95" disabled={!isActive && !isPaused} onClick={handlePause}>{isPaused ? 'Resume' : 'Pause'}</button>
-                    <button className="w-24 h-10 bg-white rounded transform hover:scale-105 transition-transform duration-200 active:scale-95" onClick={() => {
-                        console.log('calling')
-                        openPopup(<TimerPopup />)}
-                    }>Set timer</button>
+                    <button className="w-24 h-10 bg-white rounded transform hover:scale-105 transition-transform duration-200  disabled:bg-gray-600 disabled:hover:scale-100 disabled:active:scale-100 disabled:text-white" disabled={isActive} onClick={handleStart}>Start</button>
+                    <button className="w-24 h-10 bg-white rounded transform hover:scale-105 transition-transform duration-200 disabled:bg-gray-600 disabled:hover:scale-100 disabled:active:scale-100 disabled:text-white" disabled={!isActive && !isPaused} onClick={handlePause}>{isPaused ? 'Resume' : 'Pause'}</button>
+                    <TimerPopover setTime={setTime} isActive={isActive}/>
                 </FlexBoxCentered>
             </FlexBoxColumnCentered>
         </section>

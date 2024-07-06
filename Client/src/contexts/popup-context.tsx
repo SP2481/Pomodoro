@@ -31,7 +31,7 @@ export const PopupProvider = ( {children} : {children : ReactNode}) =>  {
         <PopupContext.Provider value={{ open, content, openPopup, closePopup }}>
             {children}
             {open && content && (
-                <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-50 bg=[rgba(0, 0, 0, 0.5)]">
+                <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-[1000] bg=[rgba(0, 0, 0, 0.5)]">
                     {content}
                 </div>
             )}
