@@ -1,15 +1,17 @@
-import { ResponseBuilder } from './../utils/response.builder';
-import { Request, Response, json } from 'express'
+import { User } from './../models/user.model';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Request, Response } from 'express';
+import * as statusCodes from 'http-status';
 import { Session } from '../models/sessions.model';
-import * as statusCodes from 'http-status'
-import { leaderboard } from '../models/leaderboard.model';
+import { ResponseBuilder } from './../utils/response.builder';
+
 
 export const createSession = async(req:Request, res:Response) => {
     try{
         const { label, end_time } = req.body
-        const user  = req.headers['user'] as string
-        const parsedUser = JSON.parse(user) 
-        await Session.create({ user_id: parsedUser.user_id, label, end_time})
+        const userObject  = JSON.parse(req.headers['user'] as any) ;
+        const user: any = await User.findOne({email : userObject.email})
+        await Session.create({ user_id: user._id, label: label ?? 'session' , end_time})
         const response = ResponseBuilder('success', statusCodes.CREATED)
         res.status(200).send(response)
     }catch(err:any){
@@ -23,10 +25,24 @@ export const updateSession = async (req:Request, res:Response) => {
         const session = await Session.findById(user_id);
         const isCompleted = curr_time === session?.end_time;
         await Session.updateOne(user_id, { $set:{ label: label, is_completed: isCompleted ? true :false } })
-        await leaderboard.create({user_id, total_sessions: 1})
+     
         const response = ResponseBuilder('success', statusCodes.OK)
         res.status(200).send(response)
     }catch(err:any){
         return res.status(statusCodes.BAD_REQUEST).json({ message: err.message });
+    }
+}
+
+export const getAllSessions = async (req:Request, res: Response) => {
+    try{
+        const userObject  = JSON.parse(req.headers['user'] as any) ;
+        const user: any = await User.findOne({email : userObject.email});
+        const sessions = await Session.find({ user_id: user._id })
+        console.log (sessions);
+        const response = ResponseBuilder(sessions, statusCodes.OK)
+        res.status(200).send(response);
+    } catch (err:any) {
+         res.status(statusCodes.BAD_REQUEST).json({ message: err.message });
+
     }
 }

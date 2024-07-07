@@ -9,11 +9,7 @@ const sessionSchema = new mongoose.Schema({
     label:{
         type:String,
     },
-    end_time: Date,
-    is_completed:  {
-        type:Boolean,
-        default:false
-    },
+    end_time: Number,
     created_at: {
         type:Date,
         default:Date.now()

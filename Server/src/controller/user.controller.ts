@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import argon2 from 'argon2';
 import { Request, Response } from "express";
 import * as StatusCodes from 'http-status';
@@ -10,13 +11,13 @@ import { hashPassword } from './../utils/common/hashPassword';
 export const login = async (req:Request, res:Response) => {
     try{
         const { email, password } = req.body;
-
+        console.log(req.body,'body')
         if(!email || !password){
             throw new Error(`Invalid email or password, ${email}`);
         }
 
         const user = await User.findOne({email})
-
+        console.log('user', user)
         if(!user) {
             const hashedPassword:string = await hashPassword(password);
 
@@ -34,11 +35,11 @@ export const login = async (req:Request, res:Response) => {
         
         const token = await genrateJWT({email, role:'user'})
         const response = ResponseBuilder({ token, email, role: user.role }, StatusCodes.OK);
-        res.cookie('accesstoken', token,{httpOnly:true, secure:true})
+        res.cookie('accesstoken', token,{expires: new Date(Date.now() + 9000000) })
         return res.status(StatusCodes.OK).send(response);
 
     }catch(err:any){
-
+        console.log(err.message)
         return res.status(StatusCodes.BAD_REQUEST).json({ message: err.message });
     }
 }
@@ -78,7 +79,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
             text: `Please click on the following link to reset your password :- ${process.env.URL}reset-password/${token}`
         }
 
-        transport.sendMail(options, (err, info) => {
+        transport.sendMail(options, (err) => {
             if (err) {
                 console.log(err.message);
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error sending email' });

@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { createSession } from "../controller/session.controller";
+import { createSession, getAllSessions } from "../controller/session.controller";
+import { authMiddleware } from '../middleware/authMiddleware';
 
 class SessionRoutes {
     router = Router();
@@ -7,7 +8,8 @@ class SessionRoutes {
         this.routes()
     }
     routes(){
-        this.router.post('/',createSession)
+        this.router.post('/',authMiddleware,createSession)
+        this.router.get('/',authMiddleware,getAllSessions)
     }
 }
 export default new SessionRoutes().router;

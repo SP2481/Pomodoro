@@ -3,7 +3,7 @@ import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Dispatch, SetStateAction, useState } from 'react';
 
-export default function TimerPopup({ setTime, isActive }: { setTime: Dispatch<SetStateAction<number>>, isActive:boolean }) {
+export default function TimerPopup({ setTime, isActive, setEndTime }: { setTime: Dispatch<SetStateAction<number>>, isActive:boolean, setEndTime:Dispatch<SetStateAction<number>> }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event: any) => {
@@ -51,6 +51,7 @@ export default function TimerPopup({ setTime, isActive }: { setTime: Dispatch<Se
               label="Minutes"
               onChange={(value: any) => {
                 setTime(value.$m * 60)
+                setEndTime(value.$m * 60)
               }}
               closeOnSelect={true}
               ampmInClock={false}
