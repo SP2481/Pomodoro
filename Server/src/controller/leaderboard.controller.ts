@@ -16,14 +16,33 @@ export const getLeaderboard = async (req: Request, res: Response) => {
         }
 
         // Get the entire leaderboard sorted by total_sessions in descending order
-        const allLeaderBoard = await leaderboard.find().sort({ total_sessions: -1 });
+        const allLeaderBoard = await leaderboard.aggregate([
+            {
+                $lookup: {
+                    from: 'users', // name of the users collection
+                    localField: 'user_id', // field in leaderboard collection
+                    foreignField: '_id', // field in users collection
+                    as: 'userDetails' // name of the array field to add user details
+                }
+            },
+            {
+                $unwind: '$userDetails' // flatten the userDetails array
+            },
+            {
+                $sort: { total_sessions: -1 } // sort by total_sessions in descending order
+            }
+        ]);
 
         // Add rank to each entry
         const leaderboardWithRanks = allLeaderBoard.map((entry, index) => ({
             user_id: entry.user_id,
             total_sessions: entry.total_sessions,
-            rank: index + 1
+            rank: index + 1,
+            userDetails: {
+                email: entry.userDetails.email
+            }
         }));
+
 
         // Find the user's rank
         const userRank = leaderboardWithRanks.find(entry => entry.user_id.toString() === user._id.toString());

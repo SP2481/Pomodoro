@@ -11,12 +11,16 @@ export default function Header(){
         <div>
             <nav className="w-full h-20 shadow-xl flex justify-around items-center">
                 <h1 className="text-white" onClick={() => push('/')}>Pomodoro</h1>
-                <div className="flex items-center">
+                <div className="flex items-center gap-4">
+                    <button className='w-24 h-8 bg-white rounded-md text-black' onClick={() => push('/leaderboard')}>Leaderboard</button>
                     {
                         accesstoken ? (
                             <ProfileDropdown/>
                         ) : (
+                            <>
+                            
                             <button className='w-24 h-8 bg-white rounded-md text-black' onClick={notLoggedInHandler}>Login</button>
+                            </>
                         )
                     }
                 </div> 
