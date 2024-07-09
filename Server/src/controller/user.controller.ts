@@ -3,6 +3,7 @@ import argon2 from 'argon2';
 import { Request, Response } from "express";
 import * as StatusCodes from 'http-status';
 import nodemailer from 'nodemailer';
+import { leaderboard } from '../models/leaderboard.model';
 import { User } from "../models/user.model";
 import { genrateJWT } from "../services/jwt";
 import { ResponseBuilder } from "../utils/response.builder";
@@ -17,12 +18,11 @@ export const login = async (req:Request, res:Response) => {
         }
 
         const user = await User.findOne({email})
-        console.log('user', user)
         if(!user) {
             const hashedPassword:string = await hashPassword(password);
 
             const createUser = await User.create({email, password: hashedPassword})
-
+            await leaderboard.create({ user_id: createUser._id, total_sessions: 0})
             const token = await genrateJWT({email, role:'user'})
             const response = ResponseBuilder({token, email, role:createUser.role},StatusCodes.CREATED )
             return res.status(201).send(response);
@@ -35,7 +35,7 @@ export const login = async (req:Request, res:Response) => {
         
         const token = await genrateJWT({email, role:'user'})
         const response = ResponseBuilder({ token, email, role: user.role }, StatusCodes.OK);
-        res.cookie('accesstoken', token,{expires: new Date(Date.now() + 9000000) })
+        res.cookie('accesstoken', token,{expires: new Date(Date.now() + 90000000) })
         return res.status(StatusCodes.OK).send(response);
 
     }catch(err:any){
