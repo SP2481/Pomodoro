@@ -12,20 +12,13 @@ import { hashPassword } from './../utils/common/hashPassword';
 export const login = async (req:Request, res:Response) => {
     try{
         const { email, password } = req.body;
-        console.log(req.body,'body')
         if(!email || !password){
             throw new Error(`Invalid email or password, ${email}`);
         }
 
         const user = await User.findOne({email})
         if(!user) {
-            const hashedPassword:string = await hashPassword(password);
-
-            const createUser = await User.create({email, password: hashedPassword})
-            await leaderboard.create({ user_id: createUser._id, total_sessions: 0})
-            const token = await genrateJWT({email, role:'user'})
-            const response = ResponseBuilder({token, email, role:createUser.role},StatusCodes.CREATED )
-            return res.status(201).send(response);
+            throw new Error ('User not found')
         }
 
         const isPasswordValid = await argon2.verify(user.password, password)
@@ -39,6 +32,26 @@ export const login = async (req:Request, res:Response) => {
         return res.status(StatusCodes.OK).send(response);
 
     }catch(err:any){
+        console.log(err.message)
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: err.message });
+    }
+}
+
+export const SignUp = async (req: Request, res: Response) => {
+    try {
+        const { firstName, lastName, email, password } = req.body;
+
+        const user = await  User.findOne({ email: email});
+        if(user) {
+            throw new Error('Email alredy exists');
+        }
+        const hashedPassword:string = await hashPassword(password);
+        const createUser = await User.create({first_name:firstName, last_name:lastName, email: email, password: hashedPassword})
+        await leaderboard.create({ user_id: createUser._id, total_sessions: 0})
+        const token = await genrateJWT({email, role:'user'})
+        const response = ResponseBuilder({token, email, role:createUser.role},StatusCodes.CREATED )
+        return res.status(201).send(response);
+    } catch (err:any) {
         console.log(err.message)
         return res.status(StatusCodes.BAD_REQUEST).json({ message: err.message });
     }
