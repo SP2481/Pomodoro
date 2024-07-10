@@ -120,6 +120,21 @@ export const resetPassword = async (req:Request, res:Response) => {
     }
 }
 
+export const verifyUser = async(req:Request, res:Response) => {
+    try {
+        const userObject = JSON.parse(req.headers['user'] as string);
+        const user = await User.findOne({ email: userObject.email });
+        if(!user) {
+            throw new Error('user not found');
+        }
+        console.log(user, 'user')
+        const response = ResponseBuilder(user, StatusCodes.OK)
+        res.status(200).send(response);
+    } catch (err:any) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: err.message });
+    }
+}
+
 export const getAllUser = async (req: Request, res: Response) => {
     try {
         const users = await User.find({}).select('-password');

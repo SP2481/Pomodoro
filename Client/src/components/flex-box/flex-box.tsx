@@ -1,4 +1,4 @@
-import { ReactNode, HTMLAttributes } from "react";
+import { HTMLAttributes, ReactNode } from "react";
 
 interface FlexBoxCenteredProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode;

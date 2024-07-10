@@ -1,7 +1,9 @@
 'use client'
 import { FlexBoxCentered, FlexBoxColumnCentered } from "@/components/flex-box/flex-box";
 import TimerPopover from '@/components/set-timer-popover';
+import { useLogin } from '@/hooks/useLogin';
 import { createSession } from '@/utils/api/session';
+import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from "react";
 
@@ -13,6 +15,7 @@ export default function Homepage() {
     const [isPaused, setIsPaused] = useState<boolean>(false);
     const containerRef = useRef<any>(null);
     const { push } = useRouter();
+    const { notLoggedInHandler } = useLogin();
 
     const handleFullscreen = () => {
         if (containerRef.current) {
@@ -29,6 +32,15 @@ export default function Homepage() {
             }
         }
     };
+
+    const handleRoute = (url: string) => {
+        const accesstoken = Cookies.get('accesstoken');
+        if (accesstoken) {
+            push(`/${url}`);
+        } else {
+            notLoggedInHandler()
+        }
+    }
 
     useEffect(() => {
         let interval: any;
@@ -97,7 +109,11 @@ export default function Homepage() {
             </FlexBoxColumnCentered>
             <div className='flex justify-between px-4'>
                 <h2 className='text-white text-xl cursor-pointer' onClick={handleFullscreen}>Full screen</h2>
-                <h2 className='text-white text-xl cursor-pointer' onClick={() => push('/session')}>Sessions</h2>
+                <div>
+                    <button className='w-24 h-8 bg-white rounded-md text-black' onClick={() => handleRoute('leaderboard')}>Leaderboard</button>
+
+                    <h2 className='text-white text-xl cursor-pointer' onClick={() => handleRoute('session')}>Sessions</h2>
+                </div>
             </div>
         </section>
     )

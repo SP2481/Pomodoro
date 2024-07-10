@@ -36,7 +36,6 @@ apiClient.interceptors.response.use(
 const requestor = {
     get: (url:string, config = {}) => apiClient.get(url, {...config}),
     post: (url:string, data:any, config = {}) => {
-        console.log('dataa',data)
         apiClient.post(url, data, {...config})} ,
     put: (url:string, data:any, config = {}) => apiClient.put(url, data, {...config}),
 }

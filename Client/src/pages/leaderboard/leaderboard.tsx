@@ -1,7 +1,7 @@
 'use client'
 import { getLeaderboard } from '@/utils/api/leaderboard'
-import { useQuery } from '@tanstack/react-query'
 import Cookies from 'js-cookie'
+import { useQuery } from 'react-query'
 
 
 export const LeaderboardView = () => {
@@ -10,8 +10,8 @@ export const LeaderboardView = () => {
         queryKey: ['leaderboard', token],
         queryFn: () => getLeaderboard(),
         retry: false,
+        refetchOnWindowFocus:true
     })
-    console.log(data);
     return (
                 <div className='text-7xl text-white text-center'>
                     <h1>LeaderBoard</h1>
@@ -26,9 +26,9 @@ export const LeaderboardView = () => {
                     }
                     <h2>Your rank</h2>
                     <div className='flex justify-center gap-4'>
-                                <h3 className='text-sm'>email :{data.data.userRank.userDetails.email}</h3>
-                                <h3 className='text-sm'>rank :{data.data.userRank.rank}</h3>
-                                <h3 className='text-sm'> total_sessions : {data.data.userRank.total_sessions}</h3>
+                                <h3 className='text-sm'>email :{data?.data?.userRank.userDetails.email}</h3>
+                                <h3 className='text-sm'>rank :{data?.data?.userRank.rank}</h3>
+                                <h3 className='text-sm'> total_sessions : {data?.data?.userRank.total_sessions}</h3>
                             </div>
                 </div>
     )

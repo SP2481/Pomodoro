@@ -1,8 +1,8 @@
 'use client'
 
 import { getAllSessions } from '@/utils/api/session'
-import { useQuery } from '@tanstack/react-query'
 import Cookies from 'js-cookie'
+import { useQuery } from 'react-query'
 
 export default function SessionsView () {
     const token = Cookies.get('accesstoken')
