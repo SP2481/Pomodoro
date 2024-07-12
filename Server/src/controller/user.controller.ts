@@ -40,19 +40,20 @@ export const login = async (req:Request, res:Response) => {
 export const SignUp = async (req: Request, res: Response) => {
     try {
         const { firstName, lastName, email, password } = req.body;
-
+        console.log(email)
         const user = await  User.findOne({ email: email});
         if(user) {
             throw new Error('Email alredy exists');
         }
+        console.log(user);
         const hashedPassword:string = await hashPassword(password);
         const createUser = await User.create({first_name:firstName, last_name:lastName, email: email, password: hashedPassword})
         await leaderboard.create({ user_id: createUser._id, total_sessions: 0})
         const token = await genrateJWT({email, role:'user'})
+        res.cookie('accesstoken', token,{expires: new Date(Date.now() + 90000000) })
         const response = ResponseBuilder({token, email, role:createUser.role},StatusCodes.CREATED )
         return res.status(201).send(response);
     } catch (err:any) {
-        console.log(err.message)
         return res.status(StatusCodes.BAD_REQUEST).json({ message: err.message });
     }
 }

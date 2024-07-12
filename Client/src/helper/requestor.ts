@@ -34,9 +34,15 @@ apiClient.interceptors.response.use(
 )
 
 const requestor = {
-    get: (url:string, config = {}) => apiClient.get(url, {...config}),
-    post: (url:string, data:any, config = {}) => {
-        apiClient.post(url, data, {...config})} ,
+    get: async (url:string, config = {}) => {
+        const response = await apiClient.get(url, {...config});
+        return response.data;
+        
+    },
+    post: async (url:string, data:any, config = {}) => {
+        const response = await apiClient.post(url, data, {...config})
+        return response.data;
+    } ,
     put: (url:string, data:any, config = {}) => apiClient.put(url, data, {...config}),
 }
 

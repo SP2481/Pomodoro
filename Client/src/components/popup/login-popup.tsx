@@ -1,5 +1,5 @@
 import { usePopup } from '@/hooks/usePopup';
-import { LoginUser } from '@/utils/api/login';
+import { LoginUser, SignupUser } from '@/utils/api/login';
 import { ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FlexBoxColumnCentered } from '../flex-box/flex-box';
@@ -7,6 +7,7 @@ import CircularIndeterminate from '../progress-bar/circular-progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 
 export default function LoginPopup() {
+    const { register: signUpRegister, handleSubmit: handleSignupSubmit, formState: { errors: signupErrors } } = useForm();
     const { register: loginRegister, handleSubmit: handleLoginSubmit, formState: { errors: loginErrors } } = useForm();
     const { closePopup } = usePopup();
     const [error, setError] = useState(false);
@@ -16,21 +17,37 @@ export default function LoginPopup() {
         // Handle login form submission logic here
         setLoading(true);
         const response = await LoginUser(data)
-        if (response === 'Invalid password') {
-            setError(true);
-            setLoading(false);
-        } else {
-            closePopup();
-        }
+            if (response === 'Invalid password') {
+                setError(true);
+                setLoading(false);
+            } else {
+                console.log("s;lajd")
+                closePopup();
+            }
+
     };
+    const handleSignUp = async (data:any) => {
+        console.log(data);
+         setLoading(true);
+        const response = await SignupUser(data)
+            if (response === 'Email alredy exists') {
+                setError(true);
+                setLoading(false);
+            } else {
+                console.log("s;lajd")
+                closePopup();
+            }
+
+    }
 
     return (
-        <section className="h-[25rem] w-[20rem] bg-black border-2 border-white">
+        <section className="h-[auto] w-[20rem] bg-black border-2 border-white">
             <div className='flex flex-col h-full justify-center items-center p-4 text-white'>
                 <h1 className="mb-4 text-xl font-bold">Sign in to get started</h1>
                 <Tabs defaultValue="login" className="flex flex-col self-center items-center gap-5" >
                     <TabsList>
                         <TabsTrigger value="login">Login</TabsTrigger>
+                        <TabsTrigger value="signup">SignUp</TabsTrigger>
                     </TabsList>
                     <TabsContent value="login">
                         <form onSubmit={handleLoginSubmit(handleLogin)} className='flex flex-col gap-2'>
@@ -50,6 +67,38 @@ export default function LoginPopup() {
                             <button type="submit" className='w-full h-8 bg-white text-black rounded-sm mt-2 hover:scale-105 duration-100 flex justify-center'>{loading ? (
                                 <CircularIndeterminate/>
                             ) : 'Login'}</button>
+                        </form>
+                    </TabsContent>
+                    <TabsContent value="signup">
+                        <form onSubmit={handleSignupSubmit(handleSignUp)} className='flex flex-col gap-2'>
+                            <FlexBoxColumnCentered style={{ alignItems: 'flex-start', gap: '0.2rem' }}>
+
+                                <label htmlFor="firstName">First Name</label>
+                                <input type="text" id="firstName" {...signUpRegister('firstName', { required: 'first name is required' })} className='w-max h-8 rounded-sm bg-black border-[0.5px] p-2  border-white ' />
+                                {signupErrors.firstName && <span className="text-red-500 text-sm">{signupErrors?.firstName?.message as ReactNode}</span>}
+                            </FlexBoxColumnCentered>
+                            <FlexBoxColumnCentered style={{ alignItems: 'flex-start', gap: '0.2rem' }}>
+
+                                <label htmlFor="lastName">last name</label>
+                                <input type="text" id="last-name" {...signUpRegister('lastName', { required: 'last name is required'})} className='w-max h-8 rounded-sm bg-black border-[0.5px] p-2  border-white ' />
+                                {signupErrors.lastName && <span className="text-red-500 text-sm">{signupErrors?.lastName?.message as ReactNode}</span>}
+                            </FlexBoxColumnCentered>
+                            <FlexBoxColumnCentered style={{ alignItems: 'flex-start', gap: '0.2rem' }}>
+
+                                <label htmlFor="login-email">Email</label>
+                                <input type="email" id="login-email" {...signUpRegister('email', { required: 'Email is required', pattern: /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/ })} className='w-max h-8 rounded-sm bg-black border-[0.5px] p-2  border-white ' />
+                                {signupErrors.email && <span className="text-red-500 text-sm">{signupErrors.email.message as ReactNode}</span>}
+                            </FlexBoxColumnCentered>
+                            <FlexBoxColumnCentered style={{ alignItems: 'flex-start' }}>
+
+                                <label htmlFor="login-password">Password</label>
+                                <input type="password" id="login-password" {...signUpRegister('password', { required: 'Password is required' })} className='w-max h-8 rounded-sm bg-black border-[0.5px] p-2  border-white ' />
+                                {signupErrors.password && <span className="text-red-500 text-sm">{signupErrors.password.message as ReactNode}</span>}
+                            </FlexBoxColumnCentered>
+                            {error && <small style={{color:'red'}}>Email already exists</small>}
+                            <button type="submit" className='w-full h-8 bg-white text-black rounded-sm mt-2 hover:scale-105 duration-100 flex justify-center'>{loading ? (
+                                <CircularIndeterminate/>
+                            ) : 'Signup'}</button>
                         </form>
                     </TabsContent>
                 </Tabs>

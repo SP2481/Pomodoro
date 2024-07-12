@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { forgotPassword, getAllUser, login, resetPassword, verifyUser } from "../controller/user.controller";
+import { forgotPassword, getAllUser, login, resetPassword, SignUp, verifyUser } from "../controller/user.controller";
 import { authMiddleware } from '../middleware/authMiddleware';
 
 class UserRoutes {
@@ -9,6 +9,7 @@ class UserRoutes {
     }
     routes (){
         this.router.post('/login',login);
+        this.router.post('/signup',SignUp);
         this.router.post('/forgotPass', forgotPassword)
         this.router.post('/reset-password/:token', resetPassword)
         this.router.get('/verify-user', authMiddleware, verifyUser)
