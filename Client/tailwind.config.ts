@@ -17,6 +17,10 @@ const config = {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+      play :  ['Play', 'sans-serif'],
+      Bebas_Neue: ['Bebas_Neue','sans-serif'] 
+    },
     extend: {
       colors: {
         border: "hsl(var(--border))",

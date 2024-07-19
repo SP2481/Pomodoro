@@ -1,10 +1,8 @@
 'use client'
 import { FlexBoxCentered, FlexBoxColumnCentered } from "@/components/flex-box/flex-box";
 import TimerPopover from '@/components/set-timer-popover';
-import { useLogin } from '@/hooks/useLogin';
 import { createSession } from '@/utils/api/session';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from "react";
 
 export default function Homepage() {
@@ -14,8 +12,8 @@ export default function Homepage() {
     const [isBreakTime, setIsBreakTime] = useState<boolean>(false);
     const [isPaused, setIsPaused] = useState<boolean>(false);
     const containerRef = useRef<any>(null);
-    const { push } = useRouter();
-    const { notLoggedInHandler } = useLogin();
+    const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+    const accesstoken = Cookies.get('accesstoken')
 
     const handleFullscreen = () => {
         if (containerRef.current) {
@@ -23,24 +21,18 @@ export default function Homepage() {
                 // Enter fullscreen mode
                 containerRef.current.requestFullscreen().catch((err: any) => {
                     console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    setIsFullScreen(false)
                 });
+                setIsFullScreen(true)
             } else {
                 // Exit fullscreen mode
                 document.exitFullscreen().catch((err) => {
                     console.log(`Error attempting to exit full-screen mode: ${err.message} (${err.name})`);
                 });
+                setIsFullScreen(false)
             }
         }
     };
-
-    const handleRoute = (url: string) => {
-        const accesstoken = Cookies.get('accesstoken');
-        if (accesstoken) {
-            push(`/${url}`);
-        } else {
-            notLoggedInHandler()
-        }
-    }
 
     useEffect(() => {
         let interval: any;
@@ -62,7 +54,8 @@ export default function Homepage() {
     const handleStart = () => {
         setIsActive(true);
         setIsPaused(false);
-    }
+    };
+
     const handlePause = () => {
         if (!isPaused) {
             setIsActive(false)
@@ -79,7 +72,9 @@ export default function Homepage() {
             setTime(25 * 60); // Start the work time
         } else {
             setIsBreakTime(true); // Work period is over, set break time
-            await createSession({ end_time: endTime }); // Create a session
+            if (accesstoken) {
+                await createSession({ end_time: endTime }); // Create a session
+            }
             setTime(5 * 60); // Set the break time (changed to 5 minutes for standard Pomodoro)
         }
         setIsActive(false); // Automatically pause the timer
@@ -95,26 +90,26 @@ export default function Homepage() {
 
     return (
         <section ref={containerRef} className='flex flex-col justify-around w-full'>
-            <FlexBoxColumnCentered style={{ gap: '1rem' }}>
+            <FlexBoxColumnCentered>
                 <div className="flex">
-                    <h2 className={`w-24 h-8 flex items-center justify-center  ${!isBreakTime ? 'bg-[#d5d5d5] text-gray' : 'bg-inherit text-white'}`}>Work time</h2>
-                    <h2 className={`w-24 h-8 flex items-center justify-center  ${isBreakTime ? 'bg-[#d5d5d5] text-gray' : 'bg-inherit text-white'}`}>Break!</h2>
+                    <h2 className={`w-24 h-8 flex items-center justify-center rounded-2xl  ${!isBreakTime ? 'bg-[#777777] text-gray' : 'bg-inherit text-white'}`}>Work time</h2>
+                    <h2 className={`w-24 h-8 flex items-center justify-center rounded-2xl  ${isBreakTime ? 'bg-[#777777] text-gray' : 'bg-inherit text-white'}`}>Break!</h2>
                 </div>
-                <h1 className="text-white text-6xl ">{formatTime(time)}</h1>
+                <h1 className={`text-[#777777] text-[16rem] font-semibold text-center font-Bebas_Neue`}>{formatTime(time)}</h1>
                 <FlexBoxCentered style={{ gap: '1rem' }}>
-                    <button className="w-24 h-10 bg-white rounded transform hover:scale-105 transition-transform duration-200  disabled:bg-gray-600 disabled:hover:scale-100 disabled:active:scale-100 disabled:text-white" disabled={isActive} onClick={handleStart}>Start</button>
-                    <button className="w-24 h-10 bg-white rounded transform hover:scale-105 transition-transform duration-200 disabled:bg-gray-600 disabled:hover:scale-100 disabled:active:scale-100 disabled:text-white" disabled={!isActive && !isPaused} onClick={handlePause}>{isPaused ? 'Resume' : 'Pause'}</button>
+                    <button className="w-24 h-10 bg-yellow-300 rounded-3xl font-medium transform hover:scale-105 transition-transform duration-200  disabled:bg-gray-600 disabled:hover:scale-100 disabled:active:scale-100 disabled:text-white" disabled={isActive} onClick={handleStart}>Start</button>
+                    <button className="w-24 h-10 bg-yellow-300 rounded-3xl font-medium transform hover:scale-105 transition-transform duration-200 disabled:bg-gray-600 disabled:hover:scale-100 disabled:active:scale-100 disabled:text-white" disabled={!isActive && !isPaused} onClick={handlePause}>{isPaused ? 'Resume' : 'Pause'}</button>
                     <TimerPopover setTime={setTime} isActive={isActive} setEndTime={setEndTime} />
                 </FlexBoxCentered>
             </FlexBoxColumnCentered>
-            <div className='flex justify-between px-4'>
-                <h2 className='text-white text-xl cursor-pointer' onClick={handleFullscreen}>Full screen</h2>
-                <div>
-                    <button className='w-24 h-8 bg-white rounded-md text-black' onClick={() => handleRoute('leaderboard')}>Leaderboard</button>
+            <button className={ `cursor-pointer absolute group overflow-hidden w-max ${isFullScreen ? 'bottom-4 left-4' : 'relative left-4 bottom-4'} px-8 py-2 border-yellow-300` } onClick={handleFullscreen}>
+                <span className="font-bold text-black text-xl relative z-10 group-hover:text-yellow-300 duration-500">Full screen</span>
+                <span className="absolute top-0 left-0 w-full bg-yellow-300 duration-500 group-hover:-translate-x-full h-full"></span>
+                <span className="absolute top-0 left-0 w-full bg-yellow-300 duration-500 group-hover:translate-x-full h-full"></span>
 
-                    <h2 className='text-white text-xl cursor-pointer' onClick={() => handleRoute('session')}>Sessions</h2>
-                </div>
-            </div>
+                <span className="absolute top-0 left-0 w-full bg-yellow-300 duration-500 delay-300 group-hover:-translate-y-full h-full"></span>
+                <span className="absolute delay-300 top-0 left-0 w-full bg-yellow-300 duration-500 group-hover:translate-y-full h-full"></span>
+            </button>
         </section>
     )
 }

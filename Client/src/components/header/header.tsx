@@ -1,33 +1,29 @@
+import { useAuth } from '@/hooks/useAuth';
 import { useLogin } from '@/hooks/useLogin';
-import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { ProfileDropdown } from './profile-dropdown';
 
 
 
 
 export default function Header(){
-    const [accessToken, setAccessToken] = useState<string | null>(null);
     const { notLoggedInHandler } = useLogin()
-    const { push } = useRouter();
-
-    useEffect(() => {
-        setAccessToken(Cookies.get('accesstoken') ?? null);
-    }, [accessToken]);
+    const { isLoggedIn } = useAuth()
 
     return (
         <div>
             <nav className="w-full h-20 shadow-xl flex justify-around items-center">
-                <h1 className="text-white" onClick={() => push('/')}>Pomodoro</h1>
+                <Link href={'/'}>
+                <h1 className="text-white">Pomodoro</h1>
+                </Link>
                 <div className="flex items-center gap-4">
                     {
-                        accessToken ? (
+                        isLoggedIn ? (
                             <ProfileDropdown/>
                         ) : (
                             <>
                             
-                            <button className='w-24 h-8 bg-white rounded-md text-black' onClick={notLoggedInHandler}>Login</button>
+                            <button className='w-24 h-8 bg-yellow-300 rounded-2xl font-medium text-black' onClick={notLoggedInHandler}>Login</button>
                             </>
                         )
                     }

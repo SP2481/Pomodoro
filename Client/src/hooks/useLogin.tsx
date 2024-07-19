@@ -1,8 +1,7 @@
 import LoginPopup from '@/components/popup/login-popup';
 import requestor from '@/helper/requestor';
 import Cookies from 'js-cookie';
-import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useEffect, useState } from 'react';
 import { useAuth } from './useAuth';
 import { usePopup } from './usePopup';
 
@@ -12,45 +11,43 @@ const verifyUser = async () => {
 }
 
 export const useLogin = () => {
-    const { openPopup } = usePopup()
-    const [accessToken, setAccessToken] = useState<string  | null>(Cookies.get('accesstoken') ?? null);
-    const { dispatch } = useAuth(); 
+    const { openPopup } = usePopup();
+    const [accessToken, setAccessToken] = useState<string | null>(Cookies.get('accesstoken') ?? null);
+    const { login } = useAuth(); // use the context
 
-    useQuery({
-        queryKey: ['user', accessToken],
-        queryFn: () => verifyUser(),
-        onSuccess: (data) => {
-            dispatch({
-                type:'SET_EMAIL',
-                payload: data?.data?.data?.email 
-            })
-        },
-        onError: () => {
-            Cookies.remove('accesstoken');
-            setAccessToken(null);
-        },
-        retry:false
-    })
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                await verifyUser();
+                login()
+                return;
+            } catch (error) {
+                Cookies.remove('accesstoken');
+                setAccessToken(null);
+            }
+        };
 
+        if (accessToken) {
+            fetchData();
+        }
+    }, [accessToken, login]); // add isLoggedIn to dependencies
 
     const notLoggedInHandler = () => {
-            if (!accessToken) {
-                openPopup(<LoginPopup />)
-            }
-    }
+        if (!accessToken) {
+            openPopup(<LoginPopup />);
+        }
+    };
 
     const logoutHandler = () => {
-        if(accessToken) {
+        if (accessToken) {
             Cookies.remove('accesstoken');
             setAccessToken(null);
-            notLoggedInHandler()
+            notLoggedInHandler();
         }
-    }
-
+    };
 
     return {
         notLoggedInHandler,
-        logoutHandler
-    }
-
-}
+        logoutHandler,
+    };
+};

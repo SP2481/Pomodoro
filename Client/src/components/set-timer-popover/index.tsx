@@ -20,7 +20,7 @@ export default function TimerPopup({ setTime, isActive, setEndTime }: { setTime:
   return (
     <div>
       <button
-        className='w-24 h-10 bg-white rounded transform hover:scale-105 transition-transform duration-200 disabled:bg-gray-600 disabled:hover:scale-100 disabled:active:scale-100 disabled:text-white'
+        className='w-24 h-10 bg-yellow-300 rounded-3xl font-medium transform hover:scale-105 transition-transform duration-200 disabled:bg-gray-600 disabled:hover:scale-100 disabled:active:scale-100 disabled:text-white'
         onClick={handleClick}
         disabled={isActive}
       >
@@ -50,8 +50,8 @@ export default function TimerPopup({ setTime, isActive, setEndTime }: { setTime:
               format="mm"
               label="Minutes"
               onChange={(value: any) => {
-                setTime(value.$m * 60)
-                setEndTime(value.$m * 60)
+                setTime(value?.$m * 60)
+                setEndTime(value?.$m * 60)
               }}
               closeOnSelect={true}
               ampmInClock={false}

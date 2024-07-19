@@ -1,39 +1,27 @@
-/* eslint-disable no-unused-vars */
-import { createContext, Dispatch, ReactNode, useReducer } from 'react';
+import { createContext, ReactNode, useState } from 'react';
 
-interface State { 
-    email: string
-}
+export const LoginContext = createContext({
+    isLoggedIn: false,
+    login: () => {},
+    logout: () => {}
+});
 
-const initialState: State = {
-    email:''
-}
+export const LoginProvider = ({ children }:{children:ReactNode}) => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-type LoginContextProps = {
-    state: State,
-    dispatch: Dispatch<any>
-}
+    const login = () => {
+        setIsLoggedIn(true);
+        return;
+    };
 
-const reducer = (state:State, action:any) => {
-    switch (action.type) {
-        case 'SET_EMAIL' : 
-            return {
-                ...state,
-                email: action.payload
-            }
-        default: 
-            return state;
-        }   
-}
-
-export const LoginContext = createContext<any>({});
-
-export const LoginProvider = ({children}: {children:ReactNode}) => {
-    const [state, dispatch] = useReducer(reducer, initialState) // third is lazy initialization it initiated on client side
+    const logout = () => {
+        setIsLoggedIn(false);
+        return;
+    };
 
     return (
-        <LoginContext.Provider value={{state, dispatch}}>
+        <LoginContext.Provider value={{ isLoggedIn, login, logout }}>
             {children}
         </LoginContext.Provider>
-    )
-}
+    );
+};
