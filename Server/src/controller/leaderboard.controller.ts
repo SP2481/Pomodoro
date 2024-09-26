@@ -33,6 +33,12 @@ export const getLeaderboard = async (req: Request, res: Response) => {
             }
         ]);
 
+            //By using populate method
+            //         const allLeaderBoard = await Leaderboard.find()
+            //   .populate('user_id')
+            //   .sort({ total_sessions: -1 })
+            //   .exec();
+
         // Add rank to each entry
         const leaderboardWithRanks = allLeaderBoard.map((entry, index) => ({
             user_id: entry.user_id,
@@ -43,11 +49,13 @@ export const getLeaderboard = async (req: Request, res: Response) => {
             }
         }));
 
+        const topThreeRankers = leaderboardWithRanks.slice(0,3); 
 
+        const otherRankers = leaderboardWithRanks.slice(2);
         // Find the user's rank
         const userRank = leaderboardWithRanks.find(entry => entry.user_id.toString() === user._id.toString());
         // Respond with the user's rank and the entire leaderboard 
-        const response = ResponseBuilder({ userRank: userRank, leaderboard: leaderboardWithRanks }, statusCodes.OK)
+        const response = ResponseBuilder({ userRank: userRank, leaderboard: otherRankers, topThreeRankers }, statusCodes.OK)
         res.status(200).send(response);
     } catch(err:any) {
         return res.status(statusCodes.BAD_REQUEST).json({ message: err.message });

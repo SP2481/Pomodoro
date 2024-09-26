@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 
-mongoose.connect(process.env.MONGO_URI ?? "mongodb://localhost:27017/Pomodoro").then(() => {
+mongoose.connect('mongodb+srv://pomodoro:Satyam2481@pomodoro.ve5qh0t.mongodb.net/Pomodoro?retryWrites=true&w=majority').then(() => {
 
     console.log('MongoDB connected');
   }).catch((error:any) => {

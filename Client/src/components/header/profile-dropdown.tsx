@@ -16,10 +16,10 @@ export function ProfileDropdown() {
     const { logoutHandler } = useLogin()
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger className='w-24 h-8 bg-yellow-300 font-medium rounded-md text-black' >
+            <DropdownMenuTrigger className='w-24 h-8 bg-yellow-300 rounded-2xl font-medium text-black' >
                 Profile
             </DropdownMenuTrigger>
-            <DropdownMenuContent className='bg-black'>
+            <DropdownMenuContent className='bg-black w-[10rem]'>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Profile</DropdownMenuItem>

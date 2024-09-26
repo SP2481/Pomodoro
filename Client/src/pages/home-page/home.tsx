@@ -102,7 +102,7 @@ export default function Homepage() {
                     <TimerPopover setTime={setTime} isActive={isActive} setEndTime={setEndTime} />
                 </FlexBoxCentered>
             </FlexBoxColumnCentered>
-            <button className={ `cursor-pointer absolute group overflow-hidden w-max ${isFullScreen ? 'bottom-4 left-4' : 'relative left-4 bottom-4'} px-8 py-2 border-yellow-300` } onClick={handleFullscreen}>
+            <button className={ `cursor-pointer rounded-3xl absolute group overflow-hidden w-max ${isFullScreen ? 'bottom-4 left-4' : 'relative left-4 bottom-1'} px-8 py-2 border-yellow-300` } onClick={handleFullscreen}>
                 <span className="font-bold text-black text-xl relative z-10 group-hover:text-yellow-300 duration-500">Full screen</span>
                 <span className="absolute top-0 left-0 w-full bg-yellow-300 duration-500 group-hover:-translate-x-full h-full"></span>
                 <span className="absolute top-0 left-0 w-full bg-yellow-300 duration-500 group-hover:translate-x-full h-full"></span>

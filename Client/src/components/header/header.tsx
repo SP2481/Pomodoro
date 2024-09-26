@@ -1,6 +1,7 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useLogin } from '@/hooks/useLogin';
 import Link from 'next/link';
+import PersistentDrawerRight from '../drawer';
 import { ProfileDropdown } from './profile-dropdown';
 
 
@@ -12,14 +13,18 @@ export default function Header(){
 
     return (
         <div>
-            <nav className="w-full h-20 shadow-xl flex justify-around items-center">
-                <Link href={'/'}>
-                <h1 className="text-white">Pomodoro</h1>
+            <nav className="w-full h-20 shadow-xl flex justify-between  px-8  items-center">
+                <Link href={'/'}><h1 className='text-4xl text-yellow-300 font-semibold -skew-x-12'>Pomodoro</h1>
+                
+
                 </Link>
                 <div className="flex items-center gap-4">
                     {
                         isLoggedIn ? (
-                            <ProfileDropdown/>
+                            <div className='flex items-center gap-5'>
+                                <PersistentDrawerRight/>
+                                <ProfileDropdown/>
+                            </div>
                         ) : (
                             <>
                             

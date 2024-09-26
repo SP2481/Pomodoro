@@ -1,7 +1,8 @@
 import LoginPopup from '@/components/popup/login-popup';
 import requestor from '@/helper/requestor';
 import Cookies from 'js-cookie';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 import { useAuth } from './useAuth';
 import { usePopup } from './usePopup';
 
@@ -14,23 +15,24 @@ export const useLogin = () => {
     const { openPopup } = usePopup();
     const [accessToken, setAccessToken] = useState<string | null>(Cookies.get('accesstoken') ?? null);
     const { login } = useAuth(); // use the context
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                await verifyUser();
-                login()
-                return;
-            } catch (error) {
-                Cookies.remove('accesstoken');
+    useQuery({
+       queryKey:['verifyuser', accessToken],
+       queryFn: () => {
+            verifyUser()
+       },
+       onSuccess: () => {
+        login();
+       },
+       onError: () => {
+        Cookies.remove('accesstoken');
                 setAccessToken(null);
-            }
-        };
+       },
+       enabled: !!accessToken,
+       retry:false,
+       refetchOnMount: true,
+       refetchOnWindowFocus: false
+    })
 
-        if (accessToken) {
-            fetchData();
-        }
-    }, [accessToken, login]); // add isLoggedIn to dependencies
 
     const notLoggedInHandler = () => {
         if (!accessToken) {

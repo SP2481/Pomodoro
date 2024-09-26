@@ -41,30 +41,30 @@ export default function LoginPopup() {
     }
 
     return (
-        <section className="h-[auto] w-[20rem] bg-black border-2 border-white">
-            <div className='flex flex-col h-full justify-center items-center p-4 text-white'>
+        <section className="min-h-[25rem] w-[20rem] bg-black shadow-lg shadow-[#777777] rounded-lg flex items-center justify-center">
+            <div className='flex flex-col items-center p-4 text-white h-[100%]'>
                 <h1 className="mb-4 text-xl font-bold">Sign in to get started</h1>
-                <Tabs defaultValue="login" className="flex flex-col self-center items-center gap-5" >
-                    <TabsList>
+                <Tabs defaultValue="login" className="flex flex-col self-center items-center gap-4" >
+                    <TabsList className='bg-[#777777]'>
                         <TabsTrigger value="login">Login</TabsTrigger>
                         <TabsTrigger value="signup">SignUp</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="login">
-                        <form onSubmit={handleLoginSubmit(handleLogin)} className='flex flex-col gap-2'>
-                            <FlexBoxColumnCentered style={{ alignItems: 'flex-start', gap: '0.2rem' }}>
+                    <TabsContent value="login">                        
+                        <form onSubmit={handleLoginSubmit(handleLogin)} className='flex flex-col justify-around gap-4'>
+                            <FlexBoxColumnCentered style={{ alignItems: 'flex-start', gap: '0.4rem' }}>
 
                                 <label htmlFor="login-email">Email</label>
                                 <input type="email" id="login-email" {...loginRegister('email', { required: 'Email is required', pattern: /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/ })} className='w-max h-8 rounded-sm bg-black border-[0.5px] p-2  border-white ' />
                                 {loginErrors.email && <span className="text-red-500 text-sm">{loginErrors.email.message as ReactNode}</span>}
                             </FlexBoxColumnCentered>
-                            <FlexBoxColumnCentered style={{ alignItems: 'flex-start' }}>
+                            <FlexBoxColumnCentered style={{ alignItems: 'flex-start',gap: '0.4rem'  }}>
 
                                 <label htmlFor="login-password">Password</label>
                                 <input type="password" id="login-password" {...loginRegister('password', { required: 'Password is required' })} className='w-max h-8 rounded-sm bg-black border-[0.5px] p-2  border-white ' />
                                 {loginErrors.password && <span className="text-red-500 text-sm">{loginErrors.password.message as ReactNode}</span>}
                             </FlexBoxColumnCentered>
                             {error && <small style={{color:'red'}}>Invalid email/password</small>}
-                            <button type="submit" className='w-full h-8 bg-white text-black rounded-sm mt-2 hover:scale-105 duration-100 flex justify-center'>{loading ? (
+                            <button type="submit" className='w-full h-8 bg-yellow-300 text-black rounded-sm mt-2 hover:scale-105 duration-100 flex justify-center'>{loading ? (
                                 <CircularIndeterminate/>
                             ) : 'Login'}</button>
                         </form>
@@ -96,7 +96,7 @@ export default function LoginPopup() {
                                 {signupErrors.password && <span className="text-red-500 text-sm">{signupErrors.password.message as ReactNode}</span>}
                             </FlexBoxColumnCentered>
                             {error && <small style={{color:'red'}}>Email already exists</small>}
-                            <button type="submit" className='w-full h-8 bg-white text-black rounded-sm mt-2 hover:scale-105 duration-100 flex justify-center'>{loading ? (
+                            <button type="submit" className='w-full h-8 bg-yellow-300 text-black rounded-sm mt-2 hover:scale-105 duration-100 flex justify-center'>{loading ? (
                                 <CircularIndeterminate/>
                             ) : 'Signup'}</button>
                         </form>
