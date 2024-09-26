@@ -1,4 +1,4 @@
-import SessionsView from '@/pages/sessions/session-page';
+import SessionsView from '@/page-sections/sessions/session-page';
 
 export default function Sessions () {
     return (

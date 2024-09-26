@@ -3,8 +3,8 @@
 import { getAllSessions } from '@/utils/api/session'
 import Cookies from 'js-cookie'
 import { useQuery } from 'react-query'
-import { columns } from './sessions/columns'
-import { DataTable } from './sessions/table'
+import columns from '../../components/columns'
+import DataTable from './sessions/table'
 
 export default function SessionsView() {
     const token = Cookies.get('accesstoken')

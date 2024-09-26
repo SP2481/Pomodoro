@@ -22,7 +22,7 @@ const formatDate = (date:string) => {
 }
 
 
-export const columns: ColumnDef<Sessions>[] = [
+const columns: ColumnDef<Sessions>[] = [
   {
     accessorKey: "label",
     header: "Label",
@@ -43,3 +43,4 @@ export const columns: ColumnDef<Sessions>[] = [
     
   },
 ]
+export default columns

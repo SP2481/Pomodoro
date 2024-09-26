@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 import { useQuery } from 'react-query'
 
 
-export const LeaderboardView = () => {
+const LeaderboardView = () => {
     const token = Cookies.get('accesstoken')
     const { data } = useQuery({
         queryKey: ['leaderboard', token],
@@ -36,3 +36,5 @@ export const LeaderboardView = () => {
                 </div>
     )
 }
+
+export default LeaderboardView
