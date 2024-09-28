@@ -151,6 +151,7 @@ export const verifyUser = async(req:Request, res:Response) => {
 
 export const getAllUser = async (req: Request, res: Response) => {
     try {
+        console.log('here')
         const users = await User.find({}).select('-password');
         const response = ResponseBuilder(users, StatusCodes.OK);
         return res.status(StatusCodes.OK).send(response);

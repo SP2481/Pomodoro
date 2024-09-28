@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { forgotPassword, getAllUser, login, resetPassword, SignUp, verifyUser } from "../controller/user.controller";
+import { forgotPassword, login, resetPassword, SignUp, verifyUser } from "../controller/user.controller";
 import { authMiddleware } from '../middleware/authMiddleware';
 
 class UserRoutes {
@@ -13,7 +13,9 @@ class UserRoutes {
         this.router.post('/forgotPass', forgotPassword)
         this.router.post('/reset-password/:token', resetPassword)
         this.router.get('/verify-user', authMiddleware, verifyUser)
-        this.router.get('/', getAllUser)
+        this.router.get('/', (req, res) => {
+    res.send('User route working');
+})
     }
 }
 export default new UserRoutes().router;
