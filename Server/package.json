@@ -1,7 +1,9 @@
 {
   "scripts": {
-    "start": "ts-node ./src/index.ts",
-    "dev": "nodemon ./src/index.ts"
+    "build": "tsc",
+    "start": "node ./src/index.ts",
+    "dev": "nodemon ./src/index.ts",
+    "vercel-build": "yarn build"
   },
   "dependencies": {
     "@types/argon2": "^0.15.0",
